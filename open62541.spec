@@ -7,7 +7,7 @@ Summary:	Open source C implementation of OPC UA
 Summary(pl.UTF-8):	Mająca otwarte źródła, napisana w C implementacja OPC UA
 Name:		open62541
 Version:	1.3.2
-Release:	2
+Release:	3
 License:	MPL v2.0
 Group:		Libraries
 #Source0Download: https://github.com/open62541/open62541/releases
@@ -17,6 +17,7 @@ Patch0:		%{name}-types.patch
 Patch1:		%{name}-bpf.patch
 Patch2:		%{name}-libwebsockets4.patch
 Patch3:		%{name}-visibility.patch
+Patch4:		%{name}-rpath.patch
 URL:		http://www.open62541.org/
 BuildRequires:	cmake >= 3.0
 BuildRequires:	libwebsockets-devel
@@ -82,6 +83,7 @@ Dokumentacja API biblioteki open62541.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # not for gcc
 %{__sed} -i -e '/check_add_.*-Wno-static-in-inline/d' CMakeLists.txt
