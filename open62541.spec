@@ -7,7 +7,7 @@ Summary:	Open source C implementation of OPC UA
 Summary(pl.UTF-8):	Mająca otwarte źródła, napisana w C implementacja OPC UA
 Name:		open62541
 Version:	1.3.2
-Release:	1
+Release:	2
 License:	MPL v2.0
 Group:		Libraries
 #Source0Download: https://github.com/open62541/open62541/releases
@@ -106,7 +106,7 @@ CFLAGS="%{rpmcflags} -I/usr/include/p11-kit-1/p11-kit -Wno-error=maybe-uninitial
 LDFLAGS="%{rpmldflags} -L%{_libdir}/pkcs11"
 %cmake .. \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
-	-DCMAKE_INSTALL_INCLUDEDIR=%{_lib} \
+	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
 	-DTPM2_LIB=%{_libdir}/pkcs11/libtpm2_pkcs11.so \
 	-DUA_BUILD_TOOLS=ON \
 	-DUA_ENABLE_DISCOVERY=ON \
