@@ -1,0 +1,13 @@
+ws_ping_pong_interval was added in libwebsockets 3 and removed in libwebsockets 4
+--- open62541-1.3.2/arch/network_ws.c.orig	2022-06-24 11:05:00.000000000 +0200
++++ open62541-1.3.2/arch/network_ws.c	2022-07-02 20:26:37.311814259 +0200
+@@ -292,7 +292,9 @@ ServerNetworkLayerWS_start(UA_ServerNetw
+     info.port = layer->port;
+     info.protocols = protocols;
+     info.vhost_name = (char *)nl->discoveryUrl.data;
++#if LWS_LIBRARY_VERSION_MAJOR == 3
+     info.ws_ping_pong_interval = 10;
++#endif
+     info.options = LWS_SERVER_OPTION_HTTP_HEADERS_SECURITY_BEST_PRACTICES_ENFORCE;
+     info.pvo = &pvo;
+     info.user = layer;

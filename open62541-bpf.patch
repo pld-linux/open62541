@@ -1,0 +1,29 @@
+--- open62541-1.3.2/plugins/ua_pubsub_ethernet.c.orig	2022-06-24 11:05:00.000000000 +0200
++++ open62541-1.3.2/plugins/ua_pubsub_ethernet.c	2022-07-02 18:26:09.914301766 +0200
+@@ -14,6 +14,9 @@
+ #include <open62541/plugin/log_stdout.h>
+ #include <open62541/plugin/pubsub_ethernet.h>
+ 
++// disable -Werror for xsk declarations (libbpf 0.7+)
++#pragma GCC diagnostic warning "-Wdeprecated-declarations"
++
+ #define RECEIVE_MSG_BUFFER_SIZE   4096
+ static UA_THREAD_LOCAL UA_Byte ReceiveMsgBufferETH[RECEIVE_MSG_BUFFER_SIZE];
+ 
+@@ -50,6 +53,7 @@ static UA_THREAD_LOCAL UA_Byte ReceiveMs
+ #       include <bpf/libbpf.h>
+ #       ifndef asm
+ #           define asm __asm__
++#           define typeof __typeof__
+ #       endif
+ #       include <bpf/xsk.h>
+ #   endif
+@@ -477,7 +481,7 @@ UA_PubSubChannelEthernetXDP_receive(UA_P
+     UA_UInt64 ret;
+     UA_UInt32 rcvd;
+     UA_Byte *pkt, *buf;
+-    ssize_t len;
++    size_t len;
+ 
+     xdp_socket = channelDataEthernet->xdpsocket;
+     message->length = 0;
