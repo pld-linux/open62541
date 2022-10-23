@@ -20,7 +20,9 @@ Patch3:		%{name}-visibility.patch
 Patch4:		%{name}-rpath.patch
 URL:		http://www.open62541.org/
 BuildRequires:	cmake >= 3.0
+BuildRequires:	libbpf-devel
 BuildRequires:	libwebsockets-devel
+BuildRequires:	libxdp-devel
 BuildRequires:	openssl-devel
 BuildRequires:	p11-kit-devel
 BuildRequires:	python3 >= 1:3

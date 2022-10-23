@@ -1,24 +1,69 @@
---- open62541-1.3.2/plugins/ua_pubsub_ethernet.c.orig	2022-06-24 11:05:00.000000000 +0200
-+++ open62541-1.3.2/plugins/ua_pubsub_ethernet.c	2022-07-02 18:26:09.914301766 +0200
-@@ -14,6 +14,9 @@
- #include <open62541/plugin/log_stdout.h>
- #include <open62541/plugin/pubsub_ethernet.h>
+--- open62541-1.3.3/plugins/ua_pubsub_ethernet.c.orig	2022-08-03 10:12:48.000000000 +0200
++++ open62541-1.3.3/plugins/ua_pubsub_ethernet.c	2022-10-23 19:33:13.718556139 +0200
+@@ -43,7 +43,7 @@ static UA_THREAD_LOCAL UA_Byte ReceiveMs
+ #include <linux/if_link.h>
  
-+// disable -Werror for xsk declarations (libbpf 0.7+)
-+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
-+
- #define RECEIVE_MSG_BUFFER_SIZE   4096
- static UA_THREAD_LOCAL UA_Byte ReceiveMsgBufferETH[RECEIVE_MSG_BUFFER_SIZE];
- 
-@@ -50,6 +53,7 @@ static UA_THREAD_LOCAL UA_Byte ReceiveMs
- #       include <bpf/libbpf.h>
+ #if defined __has_include
+-#   if __has_include(<bpf/bpf.h>) && __has_include(<bpf/libbpf.h>) && __has_include(<bpf/xsk.h>)
++#   if __has_include(<bpf/bpf.h>) && __has_include(<bpf/libbpf.h>) && __has_include(<xdp/xsk.h>)
+ #       define LIBBPF_EBPF
+         /* Libbpf headers */
+ #       include <bpf/bpf.h>
+@@ -51,7 +51,7 @@ static UA_THREAD_LOCAL UA_Byte ReceiveMs
  #       ifndef asm
  #           define asm __asm__
-+#           define typeof __typeof__
  #       endif
- #       include <bpf/xsk.h>
+-#       include <bpf/xsk.h>
++#       include <xdp/xsk.h>
  #   endif
-@@ -477,7 +481,7 @@ UA_PubSubChannelEthernetXDP_receive(UA_P
+ #endif
+ #endif
+@@ -292,7 +292,7 @@ static xdpsock *xsk_configure(xdp_umem *
+ 
+     if (!xdp_socket->umem) {
+         UA_close(xsk_socket__fd(xdp_socket->xskfd));
+-        bpf_set_link_xdp_fd(ifindex, -1, xdp_flags);
++        bpf_xdp_attach(ifindex, -1, xdp_flags, NULL);
+         UA_free(xskparam);
+         UA_free(xdp_socket);
+         return NULL;
+@@ -335,13 +335,13 @@ static xdpsock *xsk_configure(xdp_umem *
+         (void)xsk_umem__delete(xdp_socket->umem->umem);
+         UA_free(xdp_socket->umem);
+         UA_close(xsk_socket__fd(xdp_socket->xskfd));
+-        bpf_set_link_xdp_fd(ifindex, -1, xdp_flags);
++        bpf_xdp_attach(ifindex, -1, xdp_flags, NULL);
+         UA_free(xskparam);
+         UA_free(xdp_socket);
+         return NULL;
+     }
+ 
+-    ret = bpf_get_link_xdp_id(ifindex, &xdp_socket->bpf_prog_id, xdp_flags);
++    ret = bpf_xdp_query_id(ifindex, (int)xdp_flags, &xdp_socket->bpf_prog_id);
+     if (ret) {
+         UA_LOG_ERROR (UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+             "PubSub Connection creation failed. Unable to retrieve XDP program.");
+@@ -349,7 +349,7 @@ static xdpsock *xsk_configure(xdp_umem *
+         (void)xsk_umem__delete(xdp_socket->umem->umem);
+         UA_free(xdp_socket->umem);
+         UA_close(xsk_socket__fd(xdp_socket->xskfd));
+-        bpf_set_link_xdp_fd(ifindex, -1, xdp_flags);
++        bpf_xdp_attach(ifindex, -1, xdp_flags, NULL);
+         UA_free(xskparam);
+         UA_free(xdp_socket);
+         return NULL;
+@@ -378,8 +378,8 @@ UA_PubSubChannelEthernetXDP_open(UA_PubS
+                                                    sockOptions->xdp_bind_flags);
+     if(!channelDataEthernet->xdpsocket) {
+         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "XDP Socket configuration failed");
+-        bpf_set_link_xdp_fd(channelDataEthernet->ifindex, -1,
+-                            sockOptions->xdp_flags);
++        bpf_xdp_attach(channelDataEthernet->ifindex, -1,
++                       sockOptions->xdp_flags, NULL);
+         return UA_STATUSCODE_BADINTERNALERROR;
+     }
+ 
+@@ -477,7 +477,7 @@ UA_PubSubChannelEthernetXDP_receive(UA_P
      UA_UInt64 ret;
      UA_UInt32 rcvd;
      UA_Byte *pkt, *buf;
@@ -27,3 +72,12 @@
  
      xdp_socket = channelDataEthernet->xdpsocket;
      message->length = 0;
+@@ -1283,7 +1283,7 @@ UA_PubSubChannelEthernet_close(UA_PubSub
+         xsk_socket__delete(channelDataEthernet->xdpsocket->xskfd);
+         (void)xsk_umem__delete(channelDataEthernet->xdpsocket->umem->umem);
+         /* Detach XDP program from the interface */
+-        bpf_set_link_xdp_fd(channelDataEthernet->ifindex, -1, channelDataEthernet->xdp_flags);
++        bpf_xdp_attach(channelDataEthernet->ifindex, -1, channelDataEthernet->xdp_flags, NULL);
+         UA_free(channelDataEthernet->xdpsocket->umem->buffer);
+         UA_free(channelDataEthernet->xdpsocket->umem);
+         UA_free(channelDataEthernet->xdpsocket);
