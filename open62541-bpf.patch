@@ -81,3 +81,14 @@
          UA_free(channelDataEthernet->xdpsocket->umem->buffer);
          UA_free(channelDataEthernet->xdpsocket->umem);
          UA_free(channelDataEthernet->xdpsocket);
+--- open62541-1.3.3/CMakeLists.txt.orig	2022-08-03 10:12:48.000000000 +0200
++++ open62541-1.3.3/CMakeLists.txt	2022-10-24 21:15:11.600677093 +0200
+@@ -1088,7 +1088,7 @@ if(UA_ENABLE_PUBSUB)
+         list(APPEND default_plugin_sources ${PROJECT_SOURCE_DIR}/plugins/ua_pubsub_ethernet.c)
+         find_library(LIB_BPF bpf)
+         if(LIB_BPF)
+-            list(APPEND open62541_LIBRARIES bpf)
++            list(APPEND open62541_LIBRARIES xdp bpf)
+         else()
+             message("bpf library not found. XDP functionalities will not be available.")
+         endif()

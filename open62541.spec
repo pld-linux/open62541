@@ -7,7 +7,7 @@ Summary:	Open source C implementation of OPC UA
 Summary(pl.UTF-8):	Mająca otwarte źródła, napisana w C implementacja OPC UA
 Name:		open62541
 Version:	1.3.3
-Release:	1
+Release:	2
 License:	MPL v2.0
 Group:		Libraries
 #Source0Download: https://github.com/open62541/open62541/releases
