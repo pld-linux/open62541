@@ -1,7 +1,7 @@
 ua2json tool requires UA_NetworkMessage_* visible from library
---- open62541-1.3.2/src/pubsub/ua_pubsub_networkmessage.h.orig	2022-06-24 11:05:00.000000000 +0200
-+++ open62541-1.3.2/src/pubsub/ua_pubsub_networkmessage.h	2022-07-03 07:55:24.911256767 +0200
-@@ -270,6 +270,7 @@ UA_NetworkMessage_updateBufferedNwMessag
+--- open62541-1.3.5/src/pubsub/ua_pubsub_networkmessage.h.orig	2023-02-20 10:17:48.000000000 +0100
++++ open62541-1.3.5/src/pubsub/ua_pubsub_networkmessage.h	2023-04-07 22:02:06.485719292 +0200
+@@ -273,6 +273,7 @@ UA_NetworkMessage_updateBufferedNwMessag
  
  /* If dataToEncryptStart not-NULL, then it will be set to the start-position of
   * the payload in the buffer. */
@@ -9,7 +9,7 @@ ua2json tool requires UA_NetworkMessage_* visible from library
  UA_StatusCode
  UA_NetworkMessage_encodeBinary(const UA_NetworkMessage* src,
                                 UA_Byte **bufPos, const UA_Byte *bufEnd,
-@@ -300,6 +301,7 @@ UA_NetworkMessage_decodePayload(const UA
+@@ -303,6 +304,7 @@ UA_NetworkMessage_decodePayload(const UA
  UA_StatusCode
  UA_NetworkMessage_decodeFooters(const UA_ByteString *src, size_t *offset, UA_NetworkMessage *dst);
  
@@ -17,7 +17,7 @@ ua2json tool requires UA_NetworkMessage_* visible from library
  UA_StatusCode
  UA_NetworkMessage_decodeBinary(const UA_ByteString *src, size_t *offset,
                                 UA_NetworkMessage* dst);
-@@ -308,6 +310,7 @@ UA_NetworkMessage_decodeBinary(const UA_
+@@ -311,6 +313,7 @@ UA_NetworkMessage_decodeBinary(const UA_
  UA_StatusCode
  UA_NetworkMessageHeader_decodeBinary(const UA_ByteString *src, size_t *offset, UA_NetworkMessage *dst);
  
@@ -25,16 +25,13 @@ ua2json tool requires UA_NetworkMessage_* visible from library
  size_t
  UA_NetworkMessage_calcSizeBinary(UA_NetworkMessage *p,
                                   UA_NetworkMessageOffsetBuffer *offsetBuffer);
-@@ -321,6 +324,7 @@ UA_NetworkMessage_signEncrypt(UA_Network
+@@ -324,22 +327,26 @@ UA_NetworkMessage_signEncrypt(UA_Network
                                UA_Byte *sigStart);
  #endif
  
 +UA_EXPORT
  void
  UA_NetworkMessage_clear(UA_NetworkMessage* p);
- 
-@@ -329,18 +333,21 @@ UA_NetworkMessage_delete(UA_NetworkMessa
- 
  
  #ifdef UA_ENABLE_JSON_ENCODING
 +UA_EXPORT

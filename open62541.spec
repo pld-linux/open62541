@@ -6,13 +6,13 @@
 Summary:	Open source C implementation of OPC UA
 Summary(pl.UTF-8):	Mająca otwarte źródła, napisana w C implementacja OPC UA
 Name:		open62541
-Version:	1.3.3
-Release:	2
+Version:	1.3.5
+Release:	1
 License:	MPL v2.0
 Group:		Libraries
 #Source0Download: https://github.com/open62541/open62541/releases
 Source0:	https://github.com/open62541/open62541/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	5a0ad259c1239221dea21e33815284d6
+# Source0-md5:	027a8d26b41cddd85a70105bc5069d7c
 Patch0:		%{name}-types.patch
 Patch1:		%{name}-bpf.patch
 Patch2:		%{name}-libwebsockets4.patch
