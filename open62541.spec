@@ -23,6 +23,9 @@ BuildRequires:	cmake >= 3.0
 BuildRequires:	libbpf-devel
 BuildRequires:	libwebsockets-devel
 BuildRequires:	libxdp-devel
+# required for ENCRYPTION=MBEDTLS and PUBSUB_ENCRYPTION
+BuildRequires:	mbedtls-devel
+# required for TPM2_KEYSTORE (cert_encrypt_tpm tool) - or with (non-default) ENCRYPTION=OPENSSL
 BuildRequires:	openssl-devel
 BuildRequires:	p11-kit-devel
 BuildRequires:	python3 >= 1:3
@@ -124,7 +127,7 @@ LDFLAGS="%{rpmldflags} -L%{_libdir}/pkcs11"
 	-DUA_MULTITHREADING=100
 
 # -DUA_ENABLE_DISCOVERY_MULTICAST=ON requires deps/mdnsd
-# -DUA_ENABLE_PUBSUB_MQTT requires deps/mqtt-c
+# -DUA_ENABLE_PUBSUB_MQTT (and -DUA_ENABLE_MQTT_TLS) requires deps/mqtt-c
 # -DUA_NAMESPACE_ZERO=FULL requires deps/ua_nodeset
 
 %{__make}
